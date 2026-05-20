@@ -47,7 +47,10 @@ $SUDO apt-get update && $SUDO apt-get install -y \
     git-lfs \
     cmake \
     build-essential \
-    ninja-build
+    ninja-build \
+    python3 \
+    python3-dev \
+    python3.12-dev
 
 git lfs install
 

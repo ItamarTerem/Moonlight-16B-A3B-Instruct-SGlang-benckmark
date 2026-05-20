@@ -1,0 +1,8 @@
+cd /home/runara_dgx_spark_1/Itamar/projects/Moonlight-16B-A3B-Instruct-SGlang-benckmark
+
+# Create and write to the .gitignore file
+cat << 'EOF' > .gitignore
+.venv/
+models/
+sglang/
+EOF

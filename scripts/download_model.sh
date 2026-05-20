@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Step out of the scripts directory to find the true project root
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 MODEL_ID="${MODEL_ID:-moonshotai/Moonlight-16B-A3B-Instruct}"
 MODEL_DIR="${MODEL_DIR:-${ROOT}/models/Moonlight-16B-A3B-Instruct}"
@@ -14,11 +15,14 @@ echo "MODEL_DIR: $MODEL_DIR"
 echo "======================================"
 
 # ---------------------------------------
-# Check HF CLI (Correct tool verification)
+# Check HF CLI (modern hf tool)
 # ---------------------------------------
-if ! command -v huggingface-cli >/dev/null 2>&1; then
-    echo "ERROR: 'huggingface-cli' not found."
-    echo "Please activate your venv first (source .venv/bin/activate)."
+if ! command -v hf >/dev/null 2>&1; then
+    echo "ERROR: 'hf' CLI not found."
+    echo "Please install it and activate your environment:"
+    echo "  pip install -U huggingface_hub"
+    echo "Then login:"
+    echo "  hf auth login"
     exit 1
 fi
 
@@ -27,7 +31,7 @@ fi
 # ---------------------------------------
 if [[ -z "${HF_TOKEN:-}" ]]; then
     echo "WARNING: HF_TOKEN not set."
-    echo "If the model is gated or your download fails, run: huggingface-cli login"
+    echo "If the model is gated or your download fails, run: hf auth login"
 fi
 
 # ---------------------------------------
@@ -36,9 +40,9 @@ fi
 mkdir -p "${MODEL_DIR}"
 
 # ---------------------------------------
-# Download (Corrected command sequence)
+# Download command (updated CLI)
 # ---------------------------------------
-CMD=(huggingface-cli download "${MODEL_ID}" \
+CMD=(hf download "${MODEL_ID}" \
     --local-dir "${MODEL_DIR}")
 
 if [[ -n "${REVISION}" ]]; then
@@ -48,7 +52,7 @@ fi
 echo "Running:"
 echo "${CMD[*]}"
 
-# Run the command array safely
+# Execute safely
 "${CMD[@]}"
 
 echo ""
@@ -60,5 +64,3 @@ echo ""
 echo "Run with:"
 echo "MODEL_PATH=${MODEL_DIR} bash scripts/launch_sglang_kimi.sh"
 echo "======================================"
-
-
